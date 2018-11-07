@@ -1,0 +1,11 @@
+{
+    "name": "nor1m/vkbot-it-chat",
+    "license": "MIT",
+    "description": "it",
+    "type": "project",
+    "require": {
+        "php": "^7.2",
+        "vkcom/vk-php-sdk": "^5.80",
+        "ext-json": "*"
+    }
+}
