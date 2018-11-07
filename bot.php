@@ -7,6 +7,7 @@ if (!isset($_REQUEST)) {
 }
 
 require_once "config.php";
+require_once "vendor/autoload.php";
 
 $bot                  = new Bot();
 $bot->accessToken     = VK_TOKEN;
