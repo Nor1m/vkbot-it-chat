@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aae137f1b5a712c4a2fa8521bb4c6107",
+    "content-hash": "f828e940dfcca4784c0c7b1becf469af",
     "packages": [
         {
             "name": "vkcom/vk-php-sdk",
@@ -52,6 +52,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^7.2",
+        "ext-json": "*"
+    },
     "platform-dev": []
 }
