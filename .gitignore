@@ -5,5 +5,5 @@ config.php
 .viminfo
 /.cache/
 /.composer/
-/storage/logs/
-/storage/temp/
+/storage/
+.gitconfig
