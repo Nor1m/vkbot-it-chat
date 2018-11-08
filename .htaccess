@@ -1,0 +1,4 @@
+deny from all
+<Files bot.php>
+    Allow from all
+</Files>

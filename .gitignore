@@ -1,0 +1,9 @@
+config.php
+/.idea/
+/vendor/
+.bash_history
+.viminfo
+/.cache/
+/.composer/
+/storage/
+.gitconfig

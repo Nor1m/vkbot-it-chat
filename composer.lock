@@ -1,0 +1,60 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "f828e940dfcca4784c0c7b1becf469af",
+    "packages": [
+        {
+            "name": "vkcom/vk-php-sdk",
+            "version": "5.80.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/VKCOM/vk-php-sdk.git",
+                "reference": "7d5ac55499d72608de7890eae79e6032af56562c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/VKCOM/vk-php-sdk/zipball/7d5ac55499d72608de7890eae79e6032af56562c",
+                "reference": "7d5ac55499d72608de7890eae79e6032af56562c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6",
+                "vkcom/vk-api-schema": "^5.80.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "VK\\": "src/VK"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "VK PHP SDK",
+            "homepage": "https://github.com/VKCOM/vk-php-sdk",
+            "keywords": [
+                "sdk",
+                "vk"
+            ],
+            "time": "2018-07-02T11:25:46+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.2",
+        "ext-json": "*"
+    },
+    "platform-dev": []
+}
