@@ -1,6 +1,6 @@
 <?php
 
-namespace VkBot;
+namespace App;
 
 class Bot
 {
