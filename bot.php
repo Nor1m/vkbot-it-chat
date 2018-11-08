@@ -1,7 +1,8 @@
 <?php
 
-use App\Bot;
 use App\Log;
+use App\ServerHandler;
+use VK\Client\VKApiClient;
 
 if (!isset($_REQUEST)) {
     return;
@@ -10,15 +11,14 @@ if (!isset($_REQUEST)) {
 require_once "app/config/config.php";
 require_once "vendor/autoload.php";
 
-$log = new Log();
+Log::init(ROOT_PATH . 'storage/logs/log.txt');
 
-$log->write("Загрузка проекта");
+Log::write("Загрузка проекта");
 
-$bot                  = new Bot();
-$bot->accessToken     = VK_TOKEN;
-$bot->secretKey       = VK_SECRET_KEY;
-$bot->confirmationKey = VK_CONFIRMATION_TOKEN;
-$bot->run(json_decode(
-    file_get_contents('php://input'),
-    false
-));
+$handler = new ServerHandler(new VKApiClient());
+
+$data = json_decode(file_get_contents('php://input'));
+
+$handler->parse($data);
+
+Log::close();

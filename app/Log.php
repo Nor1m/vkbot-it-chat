@@ -2,24 +2,41 @@
 
 namespace App;
 
+/**
+ * Класс Log
+ * @package App
+ */
 class Log
 {
-    protected $file;
+    /**
+     * @var resource
+     */
+    protected static $file;
 
-    public function __construct()
+    /**
+     * @param $log_path
+     * @throws \Exception
+     */
+    public static function init($log_path)
     {
-        $this->file = fopen(ROOT_PATH . 'storage/logs/log.txt', 'a+');
-        if ($this->file == false)
-            throw new \Exception('Не удается открыть файл ' . $fileName . "\n");
+        self::$file = fopen($log_path, 'a+');
+        if (self::$file == false) {
+            throw new \Exception('Не удается открыть файл ' . $log_path . PHP_EOL);
+        }
     }
 
-    public function write($string)
+    private function __construct()
     {
-        fwrite($this->file, date("d.m.Y/H:i:s") . ": " . $string . "\n");
+        throw new \LogicException("Log can not have instances!!");
     }
 
-    public function __destruct()
+    public static function write($string)
     {
-        fclose($this->file);
+        fwrite(self::$file, date("d.m.Y/H:i:s") . ": " . $string . PHP_EOL);
+    }
+
+    public static function close()
+    {
+        fclose(self::$file);
     }
 }

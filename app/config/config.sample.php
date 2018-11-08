@@ -5,6 +5,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
 /**
+ * @var string ID группы ВК
+ */
+const VK_GROUP_ID = 173634918;
+
+/**
  * @var string Токен доступа сообщества
  */
 const VK_TOKEN = "";
@@ -19,3 +24,8 @@ const VK_SECRET_KEY = "";
  * адреса сервера из настроек Callback API
  */
 const VK_CONFIRMATION_TOKEN = "";
+
+/**
+ * @var string[] Список доступных команд для бота
+ */
+const AVAILABLE_CMDS = array();
