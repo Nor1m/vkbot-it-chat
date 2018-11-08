@@ -15,7 +15,7 @@ class Log
 
     public function write($string)
     {
-        fwrite($this->file, date("d.m.Y/H:i:s") . ": " . $string);
+        fwrite($this->file, date("d.m.Y/H:i:s") . ": " . $string . "\n");
     }
 
     public function __destruct()
