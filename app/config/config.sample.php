@@ -5,6 +5,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
 /**
+ * @var string Документ для отправки юзеру перед исключением из беседы
+ */
+const VK_DOC_BEFORE_KICK = "";
+
+/**
  * @var string ID группы ВК
  */
 const VK_GROUP_ID = 173634918;

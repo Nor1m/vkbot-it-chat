@@ -24,7 +24,7 @@ class HelloCommand extends BaseCommand
     {
         $this->vk()->messages()->send(VK_TOKEN, array(
             'peer_id' => $object['peer_id'],
-            'message' => "{$user['first_name']} {$user['last_name']}, ты педр! Аргументы: "
+            'message' => "{$user['first_name']} {$user['last_name']}, привет. Аргументы: "
                 . implode(', ', $argc),
         ));
     }
