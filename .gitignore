@@ -5,3 +5,4 @@ config.php
 .viminfo
 /.cache/
 /.composer/
+/storage/logs/
