@@ -6,3 +6,4 @@ config.php
 /.cache/
 /.composer/
 /storage/logs/
+/storage/temp/
