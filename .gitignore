@@ -7,3 +7,4 @@ config.php
 /.composer/
 /storage/
 .gitconfig
+ftpsync.settings

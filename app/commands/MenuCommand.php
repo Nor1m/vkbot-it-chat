@@ -6,10 +6,10 @@ namespace App\commands;
 use App\base\BaseCommand;
 
 /**
- * Класс HelloCommand
+ * Класс MenuCommand
  * @package App\commands
  */
-class HelloCommand extends BaseCommand
+class MenuCommand extends BaseCommand
 {
     /**
      * @param $object array
@@ -24,8 +24,7 @@ class HelloCommand extends BaseCommand
     {
         $this->vk()->messages()->send(VK_TOKEN, array(
             'peer_id' => $object['peer_id'],
-            'message' => "{$user['first_name']} {$user['last_name']}, привет. Аргументы: "
-                . implode(', ', $argc),
+            'message' => "Доступные команды:\n-" . implode("\n-", AVAILABLE_CMDS) . ".",
         ));
     }
 }
