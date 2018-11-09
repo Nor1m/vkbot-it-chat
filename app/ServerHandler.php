@@ -1,8 +1,6 @@
 <?php
 
 namespace App;
-
-
 use App\base\BaseCommand;
 use VK\CallbackApi\Server\VKCallbackApiServerHandler;
 use VK\Client\VKApiClient;
@@ -45,6 +43,29 @@ class ServerHandler extends VKCallbackApiServerHandler
      */
     public function messageNew(int $group_id, ?string $secret, array $object)
     {
+    	// если юзер вступил в беседу
+    	if ($object['action']->type == "chat_invite_user" || $object['action']->type == "chat_invite_user_by_link") {
+    		// узнаем имя юзера
+	        $user = $this->_vk->users()->get(VK_TOKEN, array(
+	            'user_ids' => $object['action']->member_id,
+	        ))[0];
+    		// отправляем сообщение в беседу
+    		$this->_vk->messages()->send(VK_TOKEN, array(
+	            'peer_id' => $object['peer_id'],
+	            'message' => "{$user['first_name']} {$user['last_name']}, " . VK_GREETING
+	        ));
+    		$this->end();
+    	} 
+    	// если юзер вышел из беседы
+    	else if ($object['action']->type == "chat_kick_user") {
+    		// отправляем сообщение в беседу
+    		$this->_vk->messages()->send(VK_TOKEN, array(
+	            'peer_id' => $object['peer_id'],
+	            'message' => VK_LEAVE
+	        ));
+    		$this->end();
+    	}
+
         $text = trim($object['text']);
 
         if (strtok($text, ' ') !== '$') {
@@ -53,7 +74,7 @@ class ServerHandler extends VKCallbackApiServerHandler
 
         $argc = explode(' ', $text);
 
-        /** @var array $user_info */
+  		/** @var array $user_info */
         $user = $this->_vk->users()->get(VK_TOKEN, array(
             'user_ids' => $object['from_id'],
         ))[0];
