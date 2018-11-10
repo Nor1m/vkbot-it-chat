@@ -4,6 +4,7 @@ namespace App\commands;
 
 
 use App\base\BaseCommand;
+use App\base\Message;
 
 /**
  * Класс RulesCommand
@@ -12,19 +13,13 @@ use App\base\BaseCommand;
 class RulesCommand extends BaseCommand
 {
     /**
-     * @param $object array
-     * @param $user array
-     *
      * @param array $argc
      *
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
      */
-    public function run(array $object, array $user, array $argc): void
+    public function run(array $argc): void
     {
-        $this->vk()->messages()->send(VK_TOKEN, array(
-            'peer_id' => $object['peer_id'],
-            'message' => VK_RULES,
-        ));
+        Message::write($this->object()['peer_id'], 'message.rules');
     }
 }

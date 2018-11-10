@@ -3,6 +3,7 @@
 namespace App\commands;
 
 use App\base\BaseCommand;
+use App\base\Config;
 
 /**
  * Класс KickCommand
@@ -11,43 +12,43 @@ use App\base\BaseCommand;
 class KickCommand extends BaseCommand
 {
     /**
-     * @param $object array
-     * @param $user array
-     *
      * @param array $argc
      *
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
-    public function run(array $object, array $user, array $argc): void
+    public function run(array $argc): void
     {
-    	if (!$argc || !$object) return;
+        if (!$argc) {
+            return;
+        }
 
-    	$chat_id = $object['peer_id'] - 2000000000;
-    	$flag_gif = true;
+        $object = $this->object();
 
-    	foreach ($argc as $key => $value) {
-    		if ( preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE) ) {
+        $chat_id  = $object['peer_id'] - 2000000000;
+        $flag_gif = true;
 
-    			// если несколько юзеров то гифку показываем только раз
-    			if ( $flag_gif ) {
-	    			// отправляем юзеру гифку
-			        $this->vk()->messages()->send(VK_TOKEN, array(
-			        	'chat_id' => $chat_id,
-			            'peer_id' => $object['peer_id'],
-			            'attachment' => VK_DOC_BEFORE_KICK,
-			        ));
-			    }
+        foreach ($argc as $key => $value) {
+            if (preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
 
-        		// исключаем юзера из беседы
-    			$this->vk()->messages()->removeChatUser(VK_TOKEN, array(
-		            'chat_id' => $chat_id,
-		            'user_id' => $matches[1][0],
-		            'v' => "5.87"
-		        ));
+                // если несколько юзеров то гифку показываем только раз
+                if ($flag_gif) {
+                    // отправляем юзеру гифку
+                    $this->vk()->messages()->send(VK_TOKEN, array(
+                        'chat_id'    => $chat_id,
+                        'peer_id'    => $object['peer_id'],
+                        'attachment' => Config::attachment('kick'),
+                    ));
+                    $flag_gif = false;
+                }
 
-		        $flag_gif = false;
-    		}
-    	}
+                // исключаем юзера из беседы
+                $this->vk()->messages()->removeChatUser(VK_TOKEN, array(
+                    'chat_id' => $chat_id,
+                    'user_id' => $matches[1][0],
+                ));
+            }
+        }
     }
 }
