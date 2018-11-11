@@ -1,8 +1,5 @@
 <?php
 
-require_once "app/config/env.php";
-if ( ! BOT_STATUS ) die("ok");
-
 use App\base\Config;
 use App\base\Message;
 use App\base\ApiController;
@@ -13,6 +10,10 @@ use VK\Client\VKApiClient;
 if (!isset($_REQUEST)) {
     return;
 }
+
+require_once "app/config/env.php";
+
+if (!BOT_STATUS) die("ok"); // отрубаем всё
 
 require_once "vendor/autoload.php";
 
