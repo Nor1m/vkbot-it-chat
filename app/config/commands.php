@@ -27,4 +27,10 @@ return [
             . ' Пример: $ rules',
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
+    'admins' => [
+        'description' => 'Команда admins. Выводит в чат богов-админов.'
+            . ' Не принимает аргументы'
+            . ' Пример: $ admins',
+        'access' => BaseCommand::ACCESS_CHAT_MEMBERS,
+    ],
 ];
