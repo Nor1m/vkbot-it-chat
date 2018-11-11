@@ -18,6 +18,16 @@ require_once "vendor/autoload.php";
 
 Log::init(ROOT_PATH . 'storage/logs/log.txt');
 
+set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+        Log::write("Ошибка погашена с помощью @: $errstr, $errfile ($errline)");
+        return false;
+    }
+ 
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
 Log::write("Загрузка проекта");
 
 $vk = new VKApiClient();
