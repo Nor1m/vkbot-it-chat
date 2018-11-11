@@ -56,6 +56,42 @@ abstract class BaseCommand
 
     public abstract function run(array $argc): void;
 
+    /**
+     * Начать запуск команды
+     *
+     * Запускает проверку доступа, какие-нибудь промежуточные действия,
+     * метод {@see run()}.
+     *
+     * @param array $argc
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
+    public function process(array $argc): void
+    {
+        $this->checkAccess();
+
+        if (reset($argc) === '-h' || reset($argc) === '-help') {
+            $this->processHelpFlag();
+            return;
+        }
+
+        $this->run($argc);
+    }
+
+    /**
+     * Выводит сообщение с описанием команды
+     *
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
+    private function processHelpFlag(): void
+    {
+        $this->vk()->messages()->send(VK_TOKEN, array(
+            'message' => $this->_description,
+            'peer_id' => $this->object()['peer_id'],
+        ));
+    }
+
 
     /**
      * @throws \VK\Exceptions\VKApiException

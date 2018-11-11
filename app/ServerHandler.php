@@ -92,8 +92,7 @@ class ServerHandler extends VKCallbackApiServerHandler
         /** @var BaseCommand $cmdObj */
         $cmdObj = new $cmdClass($this->_vk, $object, $this->_fromUser, Config::commands()[$cmd]);
 
-        $cmdObj->checkAccess();
-        $cmdObj->run( array_slice($argc, 2));
+        $cmdObj->process(array_slice($argc, 2));
     }
 
     /**
