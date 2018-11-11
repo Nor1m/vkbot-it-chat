@@ -12,7 +12,6 @@ namespace App\base;
 class Protect
 {
     private static $_object;
-    private static $_vk;
 
     public static function init($object)
     {
