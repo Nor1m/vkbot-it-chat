@@ -2,10 +2,12 @@
 
 namespace App\commands;
 
+use App\base\ApiController;
 use App\base\BaseCommand;
 use App\base\Config;
-use App\base\ApiController;
 use App\base\Message;
+use App\base\Protect;
+use App\Log;
 
 /**
  * Класс KickCommand
@@ -33,13 +35,12 @@ class KickCommand extends BaseCommand
 
         foreach ($argc as $key => $value) {
             if (preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
-
-                $user_id = $matches[1][0];
+                $user_to_kick_id = $matches[1][0];
 
                 // если это админ беседы
-                if ( $this->isAdmin($user_id, $object['peer_id']) ) {
+                if (Protect::isChatAdmin($user_to_kick_id, $object['peer_id'])) {
                     Message::write($object['peer_id'], 'warning.not_kick_admin');
-                       die("ok");
+                    die("ok");
                 }
 
                 // если несколько юзеров то гифку показываем только раз
@@ -56,24 +57,9 @@ class KickCommand extends BaseCommand
                 // исключаем юзера из беседы
                 $this->vk()->messages()->removeChatUser(VK_TOKEN, array(
                     'chat_id' => $chat_id,
-                    'user_id' => $user_id,
+                    'user_id' => $user_to_kick_id,
                 ));
             }
-        }
-    }
-
-    /**
-     * Проверка на админа беседы
-     * @param int $user_id 
-     * @param int $chat_id 
-     * @return bool 
-     */
-    public function isAdmin(int $user_id, int $chat_id): bool
-    {
-        if ( !in_array( $user_id, ApiController::getChatAdmins($chat_id) ) ) {
-            return false;
-        } else {
-            return true;
         }
     }
 }

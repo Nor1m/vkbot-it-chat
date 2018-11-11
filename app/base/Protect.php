@@ -46,13 +46,42 @@ class Protect
         return;
     }
 
+    /**
+     * @param array $fromUser
+     * @param int $peer_id
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
     public static function checkIsChatAdmin(array $fromUser, int $peer_id): void
     {
-        $adminsArray = ApiController::getChatAdmins($peer_id);
-        if (!in_array($fromUser['id'], $adminsArray)) {
+        if (!self::isChatAdmin($fromUser['id'], $peer_id)) {
             Message::write(self::$_object['peer_id'], 'warning.not_admin');
             self::end();
         }
+    }
+
+    /**
+     * @param int $userId
+     * @param int $chatId
+     * @return bool
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
+    public static function isChatAdmin(int $userId, int $chatId): bool
+    {
+        return in_array($userId, ApiController::getChatAdminsIds($chatId));
+    }
+
+    /**
+     * @param int $userId
+     * @param int $chatId
+     * @return bool
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
+    public static function isChatMember(int $userId, int $chatId): bool
+    {
+        return in_array($userId, ApiController::getChatMembersIds($chatId));
     }
 
     /**
