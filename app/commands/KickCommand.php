@@ -37,10 +37,15 @@ class KickCommand extends BaseCommand
             if (preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
                 $user_to_kick_id = $matches[1][0];
 
+                if (!Protect::isChatMember($user_to_kick_id, $object['peer_id'])) {
+                    Message::write($object['peer_id'], 'warning.user_not_in_chat');
+                    return;
+                }
+
                 // если это админ беседы
                 if (Protect::isChatAdmin($user_to_kick_id, $object['peer_id'])) {
                     Message::write($object['peer_id'], 'warning.not_kick_admin');
-                    die("ok");
+                    return;
                 }
 
                 // если несколько юзеров то гифку показываем только раз
