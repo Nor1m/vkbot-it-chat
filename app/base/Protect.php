@@ -12,6 +12,7 @@ namespace App\base;
 class Protect
 {
     private static $_object;
+    private static $_vk;
 
     public static function init($object)
     {
@@ -48,7 +49,11 @@ class Protect
 
     public static function checkIsChatAdmin(array $fromUser, int $peer_id): void
     {
-        return;
+    	$adminsArray = ApiController::getChatAdmins($peer_id);
+        if (!in_array($fromUser['id'], $adminsArray)) {
+            Message::write(self::$_object['peer_id'], 'warning.not_admin');
+            self::end();
+        }
     }
 
     /**

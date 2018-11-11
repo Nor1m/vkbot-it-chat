@@ -5,7 +5,8 @@
         'greeting' => <<<GREETING
 {name} {surname}, добро пожаловать в беседу!
 Правила беседы - #rules
-Чат в телеграмм - https://t.me/it_default
+Чат в тг - https://t.me/it_default
+Группа в вк - https://vk.com/defbot
 GREETING
         ,
 
@@ -28,6 +29,8 @@ RULES
     'warning' => [
         'wrong_cmd' => 'Такой команды не существует. Чтобы посмотреть список команд введите "$ menu"',
         'chat_required' => 'Это действие можно выполнить только находясь в беседе',
+        'not_admin' => 'У вас нет доступа к этой команде',
+        'not_kick_admin' => 'Вы не можете исключить админа беседы',
     ],
 
     'success' => [
