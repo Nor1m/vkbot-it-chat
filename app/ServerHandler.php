@@ -64,7 +64,7 @@ class ServerHandler extends VKCallbackApiServerHandler
         $text = trim($object['text']);
 
         if (strtok($text, ' ') === '$') {
-            $this->runCommand(explode(' ', $text), $object);
+            $this->runCommand(preg_split('/\\s+/', $text, -1, PREG_SPLIT_NO_EMPTY), $object);
         }
 
         $this->end();
