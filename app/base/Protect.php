@@ -48,7 +48,7 @@ class Protect
 
     public static function checkIsChatAdmin(array $fromUser, int $peer_id): void
     {
-    	$adminsArray = ApiController::getChatAdmins($peer_id);
+        $adminsArray = ApiController::getChatAdmins($peer_id);
         if (!in_array($fromUser['id'], $adminsArray)) {
             Message::write(self::$_object['peer_id'], 'warning.not_admin');
             self::end();

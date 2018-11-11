@@ -34,13 +34,13 @@ class KickCommand extends BaseCommand
         foreach ($argc as $key => $value) {
             if (preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
 
-            	$user_id = $matches[1][0];
+                $user_id = $matches[1][0];
 
-            	// если это админ беседы
-            	if ( $this->isAdmin($user_id, $object['peer_id']) ) {
-            		Message::write($object['peer_id'], 'warning.not_kick_admin');
-           			die("ok");
-            	}
+                // если это админ беседы
+                if ( $this->isAdmin($user_id, $object['peer_id']) ) {
+                    Message::write($object['peer_id'], 'warning.not_kick_admin');
+                       die("ok");
+                }
 
                 // если несколько юзеров то гифку показываем только раз
                 if ($flag_gif) {
@@ -73,7 +73,7 @@ class KickCommand extends BaseCommand
         if ( !in_array( $user_id, ApiController::getChatAdmins($chat_id) ) ) {
             return false;
         } else {
-        	return true;
+            return true;
         }
     }
 }

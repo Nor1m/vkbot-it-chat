@@ -44,9 +44,11 @@ class ApiController
         $adminsArray = array();
         $membersArray = self::getChatMembers($peer_id);
         foreach ($membersArray['items'] as $key => $value) {
-        	if ( $value['is_admin'] ) {
-        		$adminsArray[] = $value['member_id'];
-        	}
+            if (!empty($value['is_admin'])) {
+                if ($value['is_admin']) {
+                    $adminsArray[] = $value['member_id'];
+                }
+            }
         }
         return $adminsArray;
     }
