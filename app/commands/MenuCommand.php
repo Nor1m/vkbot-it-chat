@@ -21,8 +21,8 @@ class MenuCommand extends BaseCommand
      */
     public function run(array $argc): void
     {
-        Message::write($this->object()['peer_id'], 'message.menu', array(
+        Message::write($this->object()['peer_id'], Message::t('message.menu', array(
             '{commands}' => PHP_EOL . "$ " . implode(PHP_EOL . "$ ", array_keys(Config::commands())),
-        ));
+        )));
     }
 }
