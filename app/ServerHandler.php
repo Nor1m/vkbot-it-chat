@@ -4,6 +4,9 @@ namespace App;
 
 
 use App\base\BaseCommand;
+use App\base\Config;
+use App\base\Message;
+use App\base\Protect;
 use VK\CallbackApi\Server\VKCallbackApiServerHandler;
 use VK\Client\VKApiClient;
 
@@ -16,6 +19,9 @@ class ServerHandler extends VKCallbackApiServerHandler
 
     /** @var VKApiClient */
     private $_vk;
+
+    /** @var array */
+    private $_fromUser;
 
     public function __construct(VKApiClient $vk)
     {
@@ -39,39 +45,110 @@ class ServerHandler extends VKCallbackApiServerHandler
      * @param int $group_id
      * @param null|string $secret
      * @param array $object
-     *
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
      */
     public function messageNew(int $group_id, ?string $secret, array $object)
     {
-        $text = trim($object['text']);
+        Protect::init($object);
+        Protect::ensureGroupSecret($group_id, $secret);
 
-        if (strtok($text, ' ') !== '$') {
-            $this->end();
-        }
-
-        $argc = explode(' ', $text);
-
-        /** @var array $user_info */
-        $user = $this->_vk->users()->get(VK_TOKEN, array(
+        $this->_fromUser = $this->_vk->users()->get(VK_TOKEN, array(
             'user_ids' => $object['from_id'],
         ))[0];
 
+        if (isset($object['action'])) {
+            $this->handleAction($object);
+        }
+
+        $text = trim($object['text']);
+
+        if (strtok($text, ' ') === '$') {
+            $this->runCommand(preg_split('/\\s+/', $text, -1, PREG_SPLIT_NO_EMPTY), $object);
+        }
+
+        $this->end();
+    }
+
+    /**
+     * @param $argc
+     * @param $object
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
+    protected function runCommand($argc, $object)
+    {
         $cmd = $argc[1];
 
-        if (!in_array($cmd, AVAILABLE_CMDS)) {
+        if (!array_key_exists($cmd, Config::commands())) {
+            Message::write($object['peer_id'], 'warning.wrong_cmd', array(
+                '{cmd}' => $cmd,
+            ));
             $this->end();
         }
 
         $cmdClass = 'App\\commands\\' . ucfirst($cmd) . 'Command';
 
         /** @var BaseCommand $cmdObj */
-        $cmdObj = new $cmdClass($this->_vk);
+        $cmdObj = new $cmdClass($this->_vk, $object, $this->_fromUser, Config::commands()[$cmd]);
 
-        $cmdObj->run($object, $user, array_slice($argc, 2));
+        $cmdObj->process(array_slice($argc, 2));
+    }
 
-        $this->end();
+    /**
+     * @param $object
+     *
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
+     */
+    protected function handleAction($object)
+    {
+        switch ($object['action']->type) {
+            case "chat_invite_user":
+            case "chat_invite_user_by_link":
+
+                // узнаем имя юзера
+                $user = $this->_vk->users()->get(VK_TOKEN, array(
+                    'user_ids' => $object['action']->member_id,
+                ))[0];
+
+                // отправляем сообщение в беседу
+                Message::write($object['peer_id'], 'message.greeting', array(
+                    '{name}'    => $user['first_name'],
+                    '{surname}' => $user['last_name'],
+                ));
+
+                $this->end();
+                break;
+
+            case "chat_kick_user":
+
+                if ($this->_fromUser['id'] != $object['action']->member_id) {
+                    // его кикнул кто-то другой, неинтересно
+                    $this->end();
+                    break;
+                }
+
+                // он сам вышел
+                $this->_vk->messages()->send(VK_TOKEN, array(
+                    'peer_id' => $object['peer_id'],
+                    'attachment' => Config::attachment('leave'),
+                ));
+
+                $this->end();
+                break;
+        }
+    }
+
+    public function parse($event)
+    {
+        try {
+            parent::parse($event);
+        } catch (\Throwable $t) {
+            Log::write($t);
+            $this->end();
+        }
     }
 
     private function end()

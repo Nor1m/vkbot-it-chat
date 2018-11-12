@@ -5,6 +5,16 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
 /**
+ * @var string Дебаг. Если всключён, будут работать логи и прочие плюхи
+ */
+const APP_DEBUG = false;
+
+/**
+ * @var string Включён ли бот. Да, нам понадобилось его выключить
+ */
+const BOT_STATUS = true;
+
+/**
  * @var string ID группы ВК
  */
 const VK_GROUP_ID = 173634918;
@@ -25,7 +35,3 @@ const VK_SECRET_KEY = "";
  */
 const VK_CONFIRMATION_TOKEN = "";
 
-/**
- * @var string[] Список доступных команд для бота
- */
-const AVAILABLE_CMDS = array();

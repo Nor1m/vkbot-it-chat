@@ -1,9 +1,10 @@
-config.php
 /.idea/
 /vendor/
+/app/config/env.php
 .bash_history
 .viminfo
 /.cache/
 /.composer/
 /storage/
 .gitconfig
+ftpsync.settings
