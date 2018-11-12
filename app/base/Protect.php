@@ -55,7 +55,7 @@ class Protect
     public static function checkIsChatAdmin(array $fromUser, int $peer_id): void
     {
         if (!self::isChatAdmin($fromUser['id'], $peer_id)) {
-            Message::write(self::$_object['peer_id'], 'warning.not_admin');
+            Message::write(self::$_object['peer_id'], Message::t('warning.not_admin'));
             self::end();
         }
     }
@@ -92,7 +92,7 @@ class Protect
     public static function checkIsChat(int $peer_id): void
     {
         if (Utils::getTypeOfId($peer_id) !== 'chat') {
-            Message::write(self::$_object['peer_id'], 'warning.chat_required');
+            Message::write(self::$_object['peer_id'], Message::t('warning.chat_required'));
             self::end();
         }
     }

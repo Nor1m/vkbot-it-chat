@@ -20,6 +20,6 @@ class RulesCommand extends BaseCommand
      */
     public function run(array $argc): void
     {
-        Message::write($this->object()['peer_id'], 'message.rules');
+        Message::write($this->object()['peer_id'], Message::t('message.rules'));
     }
 }

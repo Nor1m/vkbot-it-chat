@@ -41,8 +41,8 @@ class AdminsCommand extends BaseCommand
                 ));
         }
 
-        Message::write($this->object()['peer_id'], 'message.admins', [
+        Message::write($this->object()['peer_id'], Message::t('message.admins', [
             '{admins}' => $output,
-        ]);
+        ]));
     }
 }
