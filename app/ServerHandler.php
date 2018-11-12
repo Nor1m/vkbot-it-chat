@@ -81,9 +81,9 @@ class ServerHandler extends VKCallbackApiServerHandler
         $cmd = $argc[1];
 
         if (!array_key_exists($cmd, Config::commands())) {
-            Message::write($object['peer_id'], 'warning.wrong_cmd', array(
+            Message::write($object['peer_id'], Message::t('warning.wrong_cmd', array(
                 '{cmd}' => $cmd,
-            ));
+            )));
             $this->end();
         }
 
@@ -114,10 +114,10 @@ class ServerHandler extends VKCallbackApiServerHandler
                 ))[0];
 
                 // отправляем сообщение в беседу
-                Message::write($object['peer_id'], 'message.greeting', array(
+                Message::write($object['peer_id'], Message::t('message.greeting', array(
                     '{name}'    => $user['first_name'],
                     '{surname}' => $user['last_name'],
-                ));
+                )));
 
                 $this->end();
                 break;
@@ -144,6 +144,11 @@ class ServerHandler extends VKCallbackApiServerHandler
     public function parse($event)
     {
         try {
+            Log::write("Получен ивент типа $event->type");
+            if ($event->type === 'message_edit') {
+                $this->messageNew($event->group_id, $event->secret, (array) $event->object);
+                return;
+            }
             parent::parse($event);
         } catch (\Throwable $t) {
             Log::write($t);
