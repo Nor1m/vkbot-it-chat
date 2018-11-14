@@ -36,14 +36,14 @@ $ admins
 Принимает неограниченное количество аргументов.
 Пример: 
 ```html
-$ wiki hello wold
+$ wiki hello world
 ```
 #### Команда translate
 Переводит текст с помощью Yandex Translate
 Принимает неограниченное количество аргументов.
 Пример: 
 ```html
-$ translate hello wold
+$ translate hello world
 ```
 
 ## Глобальные параметры
