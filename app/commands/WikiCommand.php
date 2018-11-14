@@ -3,7 +3,6 @@
 namespace App\commands;
 
 use App\base\BaseCommand;
-use App\Log;
 /**
  * Класс WikiCommand
  * @package App\commands
@@ -41,7 +40,8 @@ class WikiCommand extends BaseCommand
         ]));
 
         if (!empty(json_decode($response)[2][0])) {
-            return json_decode($response)[2][0];
+            return json_decode($response)[2][0] .
+                "\n\nИсточник: " . json_decode($response)[3][0];
         } else {
             return "Ничего не найдено :(";
         }

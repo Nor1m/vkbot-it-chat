@@ -63,4 +63,14 @@ D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
+    'translate' => [
+        'description' => <<<'D'
+Команда translate.
+Переводит текст с помощью Yandex Translate
+Принимает неограниченное количество аргументов.
+Пример: $ translate hello wold
+D
+        ,
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ],
 ];
