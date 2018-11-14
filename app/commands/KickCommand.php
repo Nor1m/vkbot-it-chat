@@ -28,21 +28,20 @@ class KickCommand extends BaseCommand
 
         // если есть fwd_messages то ид для кика берем оттуда
         if (!empty($object['fwd_messages'])) {
-            foreach ($object['fwd_messages'] as $key => $value) {
-                $user_to_kick_id = $value->from_id;
-                $this->kickUser($user_to_kick_id, $object['peer_id']);
-            }
-            return;
-        }
 
-        // иначе берем из аргументов
-        if ($argc) {
-            foreach ($argc as $key => $value) {
-                $user_to_kick_id = $this->getUserIdOnArg($value);
-                $this->kickUser($user_to_kick_id, $object['peer_id']);
-            }
+            $users_to_kick_id = array_unique(array_map(function ($obj) {
+                return $obj->from_id;
+            }, $object['fwd_messages']));
+            $this->kickUser($users_to_kick_id, $object['peer_id']);
+
+        }  else if ($argc) { // иначе берем из аргументов
+
+            $users_to_kick_id = array_unique(array_map(function ($val) {
+                return $this->getUserIdOnArg($val);
+            }, $argc));
+            $this->kickUser($users_to_kick_id, $object['peer_id']);
+
         }
-        return;
     }
 
     /**
@@ -56,38 +55,43 @@ class KickCommand extends BaseCommand
         }
     }
 
-    public function kickUser($user_to_kick_id, $peer_id)
+    /**
+     * @param $users_to_kick_id
+     * @param $peer_id
+     */
+    public function kickUser($users_to_kick_id, $peer_id): void
     {
-        global $flag_gif;
-        if (!$flag_gif) $flag_gif = false;
-
+        $flag_gif = false;
         $chat_id = $peer_id - 2000000000;
 
-        if (!Protect::isChatMember($user_to_kick_id, $peer_id)) {
-            Message::write($peer_id, Message::t('warning.user_not_in_chat'));
-            return;
-        }
+        foreach ($users_to_kick_id as $key => $user_id) {
 
-        // если это админ беседы
-        if (Protect::isChatAdmin($user_to_kick_id, $peer_id)) {
-            Message::write($peer_id, Message::t('warning.not_kick_admin'));
-            return;
-        }
+            if (!Protect::isChatMember($user_id, $peer_id)) {
+                Message::write($peer_id, Message::t('warning.user_not_in_chat'));
+                return;
+            }
 
-        if (!$flag_gif) {
-            // отправляем юзеру гифку
-            $this->vk()->messages()->send(VK_TOKEN, array(
-                'chat_id'    => $chat_id,
-                'peer_id'    => $peer_id,
-                'attachment' => Config::attachment('kick'),
+            // если это админ беседы
+            if (Protect::isChatAdmin($user_id, $peer_id)) {
+                Message::write($peer_id, Message::t('warning.not_kick_admin'));
+                return;
+            }
+
+            if (!$flag_gif) {
+                // отправляем юзеру гифку
+                $this->vk()->messages()->send(VK_TOKEN, array(
+                    'chat_id' => $chat_id,
+                    'peer_id' => $peer_id,
+                    'attachment' => Config::attachment('kick'),
+                ));
+                $flag_gif = true;
+            }
+
+            // исключаем юзера из беседы
+            $this->vk()->messages()->removeChatUser(VK_TOKEN, array(
+                'chat_id' => $chat_id,
+                'user_id' => $user_id,
             ));
-            $flag_gif = true;
         }
-
-        // исключаем юзера из беседы
-        $this->vk()->messages()->removeChatUser(VK_TOKEN, array(
-            'chat_id' => $chat_id,
-            'user_id' => $user_to_kick_id,
-        ));
     }
 }
