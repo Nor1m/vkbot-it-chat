@@ -53,4 +53,14 @@ D
         ,
         'access' => BaseCommand::ACCESS_CHAT_MEMBERS,
     ],
+    'wiki' => [
+        'description' => <<<'D'
+Команда wiki.
+Возвращает информацию с сайта Wikipedia.
+Принимает неограниченное количество аргументов.
+Пример: $ wiki hello wold
+D
+        ,
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ],
 ];

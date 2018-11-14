@@ -34,7 +34,7 @@ class KickCommand extends BaseCommand
             }, $object['fwd_messages']));
             $this->kickUser($users_to_kick_id, $object['peer_id']);
 
-        }  else if ($argc) { // иначе берем из аргументов
+        }  else if (!empty($argc)) { // иначе берем из аргументов
 
             $users_to_kick_id = array_unique(array_map(function ($val) {
                 return $this->getUserIdOnArg($val);
@@ -48,7 +48,7 @@ class KickCommand extends BaseCommand
      * @param string $value
      * @return string
      */
-    public function getUserIdOnArg(string $value): string
+    public function getUserIdOnArg(string $value)
     {
         if (preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
             return $matches[1][0];

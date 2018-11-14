@@ -1,8 +1,9 @@
 <?php
 
-ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+
+// Конфигурация бота
 
 /**
  * @var string Дебаг. Если всключён, будут работать логи и прочие плюхи
@@ -10,14 +11,16 @@ ini_set('display_startup_errors', 1);
 const APP_DEBUG = false;
 
 /**
- * @var string Включён ли бот. Да, нам понадобилось его выключить
+ * @var bool статус бота
  */
 const BOT_STATUS = true;
+
+// Конфигурация VK
 
 /**
  * @var string ID группы ВК
  */
-const VK_GROUP_ID = 173634918;
+const VK_GROUP_ID = 0;
 
 /**
  * @var string Токен доступа сообщества
@@ -35,3 +38,30 @@ const VK_SECRET_KEY = "";
  */
 const VK_CONFIRMATION_TOKEN = "";
 
+/**
+ * @var string Путь к корню проекта
+ */
+defined("ROOT_PATH")
+or define("ROOT_PATH", $_SERVER['DOCUMENT_ROOT'] . "/vkapi/" );
+
+/**
+ * @var string URL API Wikipedia
+ */
+const WIKI_API_URL = "https://ru.wikipedia.org/w/api.php?";
+
+// Конфигурация бд
+
+/**
+ * @var string Имя базы данных
+ */
+const DB_NAME = "";
+
+/**
+ * @var string Логин базы данных
+ */
+const DB_USERNAME = "";
+
+/**
+ * @var string Пароль базы данных
+ */
+const DB_PASSWORD = "";
