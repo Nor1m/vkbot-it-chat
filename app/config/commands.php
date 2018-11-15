@@ -66,7 +66,7 @@ D
     'translate' => [
         'description' => <<<'D'
 Команда translate.
-Переводит текст с помощью Yandex Translate
+Переводит текст с помощью сервиса Yandex Translate.
 Принимает 2 аргумента: флаг языка и текст.
 Пример: $ translate -en Привет мир
 D

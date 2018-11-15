@@ -54,7 +54,7 @@ class TranslateCommand extends BaseCommand
                 return "Не могу это перевести :(";
             }
         } else {
-            return "Неверный параметр -" . $lang;
+            return "Неверный код языка";
         }
     }
 }
