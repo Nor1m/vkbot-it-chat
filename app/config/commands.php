@@ -58,7 +58,7 @@ D
 Команда wiki.
 Возвращает информацию с сайта Wikipedia.
 Принимает неограниченное количество аргументов.
-Пример: $ wiki hello wold
+Пример: $ wiki hello world
 D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
@@ -68,7 +68,7 @@ D
 Команда translate.
 Переводит текст с помощью Yandex Translate
 Принимает неограниченное количество аргументов.
-Пример: $ translate hello wold
+Пример: $ translate hello world
 D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
