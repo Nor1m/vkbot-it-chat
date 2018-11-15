@@ -67,8 +67,8 @@ D
         'description' => <<<'D'
 Команда translate.
 Переводит текст с помощью Yandex Translate
-Принимает неограниченное количество аргументов.
-Пример: $ translate hello world
+Принимает 2 аргумента: флаг языка и текст.
+Пример: $ translate -en Привет мир
 D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,

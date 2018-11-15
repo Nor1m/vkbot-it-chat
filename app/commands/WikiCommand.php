@@ -35,7 +35,7 @@ class WikiCommand extends BaseCommand
             'action' => 'opensearch',
             'prop' => 'info',
             'format' => 'json',
-            'search' => urlencode($search),
+            'search' => $search,
             'inprop' => 'url',
         ]));
 

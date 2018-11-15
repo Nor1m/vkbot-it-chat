@@ -20,7 +20,7 @@ const BOT_STATUS = true;
 /**
  * @var int ID группы ВК
  */
-const VK_GROUP_ID = ;
+const VK_GROUP_ID = 0;
 
 /**
  * @var string Токен доступа сообщества
@@ -73,9 +73,14 @@ const WIKI_API_URL = "https://ru.wikipedia.org/w/api.php?";
 /**
  * @var string URL API YANDEX TRANSLATE
  */
-const YANDEXTRANSLATE_API_URL = "https://translate.yandex.net/api/v1.5/tr.json/translate?";
+const YANDEXTRANSLATE_API_URL = "https://translate.yandex.net/api/v1.5/tr.json/";
 
 /**
  * @var string API KEY YANDEX TRANSLATE
  */
 const YANDEXTRANSLATE_API_KEY = "";
+
+/**
+ * @var string массив языков API YANDEX TRANSLATE
+ */
+const YANDEXTRANSLATE_API_LANG_ARRAY = array('ru', 'az', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'hr', 'hu', 'hy', 'it', 'lt', 'lv', 'mk', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr', 'uk');
