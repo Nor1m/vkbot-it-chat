@@ -27,6 +27,10 @@ abstract class BaseCommand
 
     public $_description;
 
+    public $_class;
+
+    public $_aliases;
+
     public function __construct(VKApiClient $vk, array $object, array $fromUser, array $config)
     {
         $this->_vk       = $vk;
@@ -75,6 +79,11 @@ abstract class BaseCommand
             return;
         }
 
+        if (reset($argc) === '-alt' || reset($argc) === '-a') {
+            $this->processAltFlag();
+            return;
+        }
+
         $this->run($argc);
     }
 
@@ -90,6 +99,18 @@ abstract class BaseCommand
             'message' => $this->_description,
             'peer_id' => $this->object()['peer_id'],
         ));
+    }
+
+    private function processAltFlag(): void
+    {
+        Message::write(
+            $this->object()['peer_id'],
+            'Алиасы команды:'
+                . PHP_EOL
+                . implode(PHP_EOL, array_map(function ($alt) {
+                    return '$ ' . $alt;
+                }, $this->_aliases))
+        );
     }
 
 
