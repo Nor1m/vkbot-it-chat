@@ -2,12 +2,10 @@
 
 namespace App\commands;
 
-use App\base\ApiController;
 use App\base\BaseCommand;
 use App\base\Config;
 use App\base\Message;
 use App\base\Protect;
-use App\Log;
 
 /**
  * Класс KickCommand
@@ -36,9 +34,9 @@ class KickCommand extends BaseCommand
 
         }  else if (!empty($argc)) { // иначе берем из аргументов
 
-            $users_to_kick_id = array_unique(array_map(function ($val) {
+            $users_to_kick_id = array_unique(array_filter(array_map(function ($val) {
                 return $this->getUserIdOnArg($val);
-            }, $argc));
+            }, $argc)));
             $this->kickUser($users_to_kick_id, $object['peer_id']);
 
         }
@@ -46,18 +44,35 @@ class KickCommand extends BaseCommand
 
     /**
      * @param string $value
-     * @return string
+     * @return int|bool
      */
     public function getUserIdOnArg(string $value)
     {
-        if (preg_match('~\[id(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
-            return $matches[1][0];
+        if (preg_match('~\[(id|club)(.\d+)\|~', $value, $matches, PREG_OFFSET_CAPTURE)) {
+            if ($matches[1][0] === 'club') {
+                return -$matches[2][0];
+            }
+            return $matches[2][0];
         }
+
+        return false;
     }
 
     /**
      * @param $users_to_kick_id
      * @param $peer_id
+     * @throws \VK\Exceptions\Api\VKApiMessagesChatBotFeatureException
+     * @throws \VK\Exceptions\Api\VKApiMessagesChatUserNoAccessException
+     * @throws \VK\Exceptions\Api\VKApiMessagesDenySendException
+     * @throws \VK\Exceptions\Api\VKApiMessagesForwardAmountExceededException
+     * @throws \VK\Exceptions\Api\VKApiMessagesForwardException
+     * @throws \VK\Exceptions\Api\VKApiMessagesKeyboardInvalidException
+     * @throws \VK\Exceptions\Api\VKApiMessagesPrivacyException
+     * @throws \VK\Exceptions\Api\VKApiMessagesTooLongMessageException
+     * @throws \VK\Exceptions\Api\VKApiMessagesUserBlockedException
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     public function kickUser($users_to_kick_id, $peer_id): void
     {
@@ -90,7 +105,7 @@ class KickCommand extends BaseCommand
             // исключаем юзера из беседы
             $this->vk()->messages()->removeChatUser(VK_TOKEN, array(
                 'chat_id' => $chat_id,
-                'user_id' => $user_id,
+                'member_id' => $user_id,
             ));
         }
     }
