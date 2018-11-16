@@ -6,7 +6,8 @@
     "require": {
         "php": "^7.2",
         "vkcom/vk-php-sdk": "^5.80",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4" : {

@@ -36,6 +36,11 @@ $vk = new VKApiClient('5.81');
 ApiController::init($vk);
 Message::init($vk);
 Config::init(ROOT_PATH . 'app/config');
+\App\base\Db::init(DB, DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, array(
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false
+));
 
 $handler = new ServerHandler($vk);
 

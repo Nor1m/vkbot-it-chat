@@ -87,4 +87,9 @@ D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
+    'user' => [
+        'class' => \App\commands\UserCommand::class,
+        'description' => '',
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ],
 ];
