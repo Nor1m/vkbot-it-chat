@@ -43,10 +43,10 @@ class TranslateCommand extends BaseCommand
         // если код языка такой есть
         if (in_array($lang, YANDEXTRANSLATE_API_LANG_ARRAY)) {
             $response_translate = file_get_contents(YANDEXTRANSLATE_API_URL . "translate?" . http_build_query([
-                    'key' => YANDEXTRANSLATE_API_KEY,
-                    'text' => $text,
-                    'lang' => $lang,
-                ]));
+                'key' => YANDEXTRANSLATE_API_KEY,
+                'text' => $text,
+                'lang' => $lang,
+            ]));
             if (!empty(json_decode($response_translate)->text[0])) {
                 return json_decode($response_translate)->text[0] .
                     "\n\nПереведено сервисом «Яндекс.Переводчик» http://translate.yandex.ru/";

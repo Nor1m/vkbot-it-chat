@@ -84,3 +84,10 @@ const YANDEXTRANSLATE_API_KEY = "";
  * @var string массив языков API YANDEX TRANSLATE
  */
 const YANDEXTRANSLATE_API_LANG_ARRAY = array('ru', 'az', 'be', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'hr', 'hu', 'hy', 'it', 'lt', 'lv', 'mk', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sl', 'sq', 'sr', 'sv', 'tr', 'uk');
+
+// Конфигурация YAHOO API
+
+/**
+ * @var string URL YAHOO API
+ */
+const YAHOO_API_URL = "http://query.yahooapis.com/v1/public/yql?";

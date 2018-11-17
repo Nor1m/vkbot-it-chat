@@ -80,19 +80,23 @@ class ServerHandler extends VKCallbackApiServerHandler
     {
         $cmd = $argc[1];
 
-        if (!array_key_exists($cmd, Config::commands())) {
+        $cmdInfo = Config::getCommand($cmd);
+
+        if ($cmdInfo === null) {
             Message::write($object['peer_id'], Message::t('warning.wrong_cmd', array(
                 '{cmd}' => $cmd,
             )));
             $this->end();
         }
 
-        $cmdClass = 'App\\commands\\' . ucfirst($cmd) . 'Command';
+        $cmdClass = $cmdInfo['class'];
 
-        /** @var BaseCommand $cmdObj */
-        $cmdObj = new $cmdClass($this->_vk, $object, $this->_fromUser, Config::commands()[$cmd]);
+        if (class_exists($cmdClass)) {
+            /** @var BaseCommand $cmdObj */
+            $cmdObj = new $cmdClass($this->_vk, $object, $this->_fromUser, $cmdInfo);
 
-        $cmdObj->process(array_slice($argc, 2));
+            $cmdObj->process(array_slice($argc, 2));
+        }
     }
 
     /**

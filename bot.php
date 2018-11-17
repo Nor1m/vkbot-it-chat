@@ -31,7 +31,7 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errconte
 
 Log::write("Загрузка проекта");
 
-$vk = new VKApiClient();
+$vk = new VKApiClient('5.81');
 
 ApiController::init($vk);
 Message::init($vk);

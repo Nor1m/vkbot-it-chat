@@ -4,6 +4,8 @@ use App\base\BaseCommand;
 
 return [
     'hello' => [
+        'class'   => \App\commands\HelloCommand::class,
+        'aliases' => ['hi', 'привет'],
         'description' => <<<'D'
 Команда hello.
 По сути, это проверка работы бота.
@@ -14,6 +16,8 @@ D
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
     'kick' => [
+        'aliases' => ['кик', 'кек', 'kik', 'пнх', 'ban', 'бан', 'drop'],
+        'class'   => \App\commands\KickCommand::class,
         'description' => <<<'D'
 Команда kick.
 Исключает одного или нескольких участников из беседы.
@@ -24,6 +28,8 @@ D
         'access' => BaseCommand::ACCESS_CHAT_ADMINS | BaseCommand::ACCESS_GROUP_ADMINS,
     ],
     'menu' => [
+        'aliases' => ['help', 'меню', 'пасаны-помогите?'],
+        'class'   => \App\commands\MenuCommand::class,
         'description' => <<<'D'
 Команда menu.
 Выводит в чат команды бота.
@@ -34,6 +40,8 @@ D
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
     'rules' => [
+        'aliases' => ['правила', 'что-можно'],
+        'class'   => \App\commands\RulesCommand::class,
         'description' => <<<'D'
 Команда rules.
 Выводит в чат правила беседы.
@@ -41,9 +49,11 @@ D
 Пример: $ rules
 D
         ,
-        'access' => BaseCommand::ACCESS_ANYONE,
+        'access' => BaseCommand::ACCESS_CHAT_MEMBERS,
     ],
     'admins' => [
+        'aliases' => ['админы', 'админ', 'admin'],
+        'class'   => \App\commands\AdminsCommand::class,
         'description' => <<<'D'
 Команда admins.
 Выводит в чат богов-админов.
@@ -54,6 +64,8 @@ D
         'access' => BaseCommand::ACCESS_CHAT_MEMBERS,
     ],
     'wiki' => [
+        'aliases' => ['вики'],
+        'class'   => \App\commands\WikiCommand::class,
         'description' => <<<'D'
 Команда wiki.
 Возвращает информацию с сайта Wikipedia.
@@ -64,11 +76,26 @@ D
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
     'translate' => [
+        'aliases' => ['перевод', 'перевести'],
+        'class'   => \App\commands\TranslateCommand::class,
         'description' => <<<'D'
 Команда translate.
 Переводит текст с помощью сервиса Yandex Translate.
 Принимает 2 аргумента: флаг языка и текст.
 Пример: $ translate -en Привет мир
+D
+        ,
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ],
+    'weather' => [
+        'aliases' => ['погода', 'прогноз'],
+        'class'   => \App\commands\WeatherCommand::class,
+        'description' => <<<'D'
+Команда weather.
+Выводит прогноз погоды для заданного города.
+Принимает 2 аргумента: лимит и город.
+Аргумент 'лимит': '-w' -погода на 10д и '-d' (по умолчанию) -погода на сегодня.
+Пример: $ weather -w Москва
 D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
