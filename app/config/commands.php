@@ -87,6 +87,19 @@ D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
+    'weather' => [
+        'aliases' => ['погода', 'прогноз'],
+        'class'   => \App\commands\WeatherCommand::class,
+        'description' => <<<'D'
+Команда weather.
+Выводит прогноз погоды для заданного города.
+Принимает 2 аргумента: лимит и город.
+Аргумент 'лимит': '-w' -погода на 7 дней и '-d' (по умолчанию) -погода на сегодня.
+Пример: $ weather -w Москва
+D
+        ,
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ],
     'about' => [
         'aliases' => ['обо-мне', 'я', 'source', 'github'],
         'class'   => \App\commands\AboutCommand::class,

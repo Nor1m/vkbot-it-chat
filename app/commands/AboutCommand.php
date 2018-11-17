@@ -2,7 +2,6 @@
 
 namespace App\commands;
 
-
 use App\base\BaseCommand;
 
 /**
