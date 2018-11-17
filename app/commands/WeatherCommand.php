@@ -67,7 +67,7 @@ class WeatherCommand extends BaseCommand
 
                     return $text . 'Источник: yahoo.com/news/weather';
 
-                } else if ($limit == "-d") { // если на день
+                } else if ($limit == "-d" || !$limit) { // если на день
 
                     $wind_speed = $channel->wind->speed * 0.44704;
                     $temp = $channel->item->condition->temp;
