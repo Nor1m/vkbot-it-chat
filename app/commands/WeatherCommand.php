@@ -55,13 +55,14 @@ class WeatherCommand extends BaseCommand
                 $channel = $response->query->results->channel;
                 $location = $channel->location->city . ", " . $channel->location->country;
 
-                if ($limit == "-w") { // если на 10 дней
+                if ($limit == "-w") { // если на 7 дней
 
-                    $text = 'Прогноз погоды на 10 дней в городе ' .
+                    $text = 'Прогноз погоды на 7 дней в городе ' .
                         trim($city) . ' (' . $location . ')' . PHP_EOL . PHP_EOL;
 
                     foreach ($channel->item->forecast as $key => $day) {
-                        $text .= "Дата: " . $this->geyFormatDate($day->date, $day->day) . PHP_EOL;
+                        if ($key >= 7) break;
+                        $text .= "Дата: " . $this->getFormatDate($day->date, $day->day) . PHP_EOL;
                         $text .= "Температура: от " . $day->low . " °C до " . $day->high . " °C" . PHP_EOL . PHP_EOL;
                     }
 
@@ -99,17 +100,9 @@ class WeatherCommand extends BaseCommand
      * @param $day_str
      * @return string
      */
-    public function geyFormatDate($date_str, $day_str) {
-        $date = new \DateTime($date_str);
-        $date = $date->Format('d M');
-        $date_str = str_replace(
-            array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'),
-            array('января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'),
-            $date
-        );
-        $day = new \DateTime($day_str);
-        $day = $day->Format('w');
-        $days = array('Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье');
-        return $date_str . " (" . $days[$day] . ")";
+    public function getFormatDate($date_str, $day_str): string
+    {
+        setlocale(LC_ALL, 'ru_RU.UTF-8');
+        return strftime("%e %b (%a)", strtotime($date_str . $day_str ));
     }
 }
