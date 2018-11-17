@@ -22,11 +22,16 @@ Log::init(ROOT_PATH . 'storage/logs/log.txt');
 set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
     // error was suppressed with the @-operator
     if (0 === error_reporting()) {
-        Log::write("Ошибка погашена с помощью @: $errstr, $errfile ($errline)");
+        Log::warning("Ошибка погашена с помощью @: $errstr, $errfile ($errline)");
         return false;
     }
  
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
+set_exception_handler(function (Throwable $t) {
+    Log::error($t);
+    die('ok');
 });
 
 Log::write("Загрузка проекта");

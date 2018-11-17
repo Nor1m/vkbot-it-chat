@@ -145,19 +145,19 @@ class ServerHandler extends VKCallbackApiServerHandler
         }
     }
 
+    /**
+     * @param $event
+     * @throws \VK\Exceptions\VKApiException
+     * @throws \VK\Exceptions\VKClientException
+     */
     public function parse($event)
     {
-        try {
-            Log::write("Получен ивент типа $event->type");
-            if ($event->type === 'message_edit') {
-                $this->messageNew($event->group_id, $event->secret, (array) $event->object);
-                return;
-            }
-            parent::parse($event);
-        } catch (\Throwable $t) {
-            Log::write($t);
-            $this->end();
+        Log::write("Получен ивент типа $event->type");
+        if ($event->type === 'message_edit') {
+            $this->messageNew($event->group_id, $event->secret, (array) $event->object);
+            return;
         }
+        parent::parse($event);
     }
 
     private function end()
