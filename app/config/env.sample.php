@@ -15,6 +15,16 @@ const APP_DEBUG = false;
  */
 const BOT_STATUS = true;
 
+/**
+ * @var array информация о боте
+ */
+const BOT_INFO = array(
+    'name' => 'vkbot it chat',
+    'description' => 'Чат бот для беседы вк',
+    'version' => '1.0',
+    'link' => 'https://github.com/Nor1m/vkbot-it-chat',
+);
+
 // Конфигурация VK
 
 /**

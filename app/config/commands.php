@@ -69,8 +69,8 @@ D
         'description' => <<<'D'
 Команда wiki.
 Возвращает информацию с сайта Wikipedia.
-Принимает неограниченное количество аргументов.
-Пример: $ wiki hello world
+Принимает 1 аргумент: строка поиска.
+Пример: $ wiki php
 D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
@@ -87,15 +87,13 @@ D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
-    'weather' => [
-        'aliases' => ['погода', 'прогноз'],
-        'class'   => \App\commands\WeatherCommand::class,
+    'about' => [
+        'aliases' => ['обо-мне', 'я', 'source', 'github'],
+        'class'   => \App\commands\AboutCommand::class,
         'description' => <<<'D'
-Команда weather.
-Выводит прогноз погоды для заданного города.
-Принимает 2 аргумента: лимит и город.
-Аргумент 'лимит': '-w' -погода на 10д и '-d' (по умолчанию) -погода на сегодня.
-Пример: $ weather -w Москва
+Выводит информацию о боте.
+Аргументов не принимает.
+Пример: $ about
 D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
