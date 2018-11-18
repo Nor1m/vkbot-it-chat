@@ -92,4 +92,9 @@ D
         'description' => '',
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
+    'tech' => [
+        'class' => \App\commands\TechCommand::class,
+        'description' => '',
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ]
 ];
