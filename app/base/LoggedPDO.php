@@ -29,13 +29,15 @@ class LoggedPDO extends PDO
      */
     public function query(
         $statement,
-        $mode = PDO::ATTR_DEFAULT_FETCH_MODE,
-        $arg3 = null,
-        array $ctorargs = array()
+        $mode = null
     ) {
+        if ($mode === null) {
+            $mode = $this->getAttribute(PDO::ATTR_DEFAULT_FETCH_MODE);
+        }
+
         Log::sql($statement);
 
-        $pdo_stmt = parent::query($statement, $mode, $arg3, $ctorargs);
+        $pdo_stmt = parent::query($statement, $mode);
 
         if ($pdo_stmt === false) {
             Log::error('SQL error ' . $this->errorCode());
