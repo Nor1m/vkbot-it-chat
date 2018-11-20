@@ -73,4 +73,52 @@ SQL
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, self::class);
     }
+
+    /**
+     * @param string $code
+     * @return bool
+     */
+    public function updateCode(string $code): bool
+    {
+        return Db::execute(<<<SQL
+UPDATE tech SET code = :code WHERE id = :id
+SQL
+            , [
+                'code' => $code,
+                'id'   => $this->id,
+            ]
+        );
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function updateName(string $name): bool
+    {
+        return Db::execute(<<<SQL
+UPDATE tech SET name = :name WHERE id = :id
+SQL
+            , [
+                'name' => $name,
+                'id'   => $this->id,
+            ]
+        );
+    }
+
+    /**
+     * @param string $description
+     * @return bool
+     */
+    public function updateDescription(string $description): bool
+    {
+        return Db::execute(<<<SQL
+UPDATE tech SET description = :description WHERE id = :id
+SQL
+            , [
+                'description' => $description,
+                'id'          => $this->id,
+            ]
+        );
+    }
 }
