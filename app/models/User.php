@@ -177,7 +177,7 @@ SQL
      */
     public function removeStackItemByOrd(int $ord): bool
     {
-        return Db::pdo()->prepare(<<<SQL
+        $res = Db::pdo()->prepare(<<<SQL
 DELETE FROM user_tech
 WHERE ord = :ord AND user_id = :userId
 SQL
@@ -185,6 +185,18 @@ SQL
             'userId' => $this->vk_id,
             'ord' => $ord,
         ));
+
+        if ($res) {
+            $res = $res && Db::execute(
+                    "UPDATE user_tech SET ord = ord - 1 WHERE user_id = :user AND ord > :ord",
+                    [
+                        'user' => $this->vk_id,
+                        'ord'  => $ord,
+                    ]
+                );
+        }
+
+        return $res;
     }
 
     /**
@@ -193,13 +205,11 @@ SQL
      */
     public function removeStackItem(int $itemId): bool
     {
-        return Db::pdo()->prepare(<<<SQL
-DELETE FROM user_tech
-WHERE tech_id = :item AND user_id = :userId
-SQL
-        )->execute(array(
-            'userId' => $this->vk_id,
-            'item' => $itemId,
-        ));
+        $ord = Db::queryScalar("SELECT ord FROM user_tech WHERE user_id = ? AND tech_id = ?", [
+            $this->vk_id,
+            $itemId,
+        ]);
+
+        return $this->removeStackItemByOrd($ord);
     }
 }
