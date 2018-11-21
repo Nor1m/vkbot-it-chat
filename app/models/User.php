@@ -3,6 +3,7 @@
 namespace App\models;
 
 use App\base\Db;
+use App\Log;
 use PDO;
 
 class User
@@ -65,6 +66,25 @@ SQL
             ':fname' => $user['first_name'],
             ':lname' => $user['last_name'],
         ]);
+    }
+
+    public static function getOrCreate(array $user): ?self
+    {
+        $user = User::get($user['id']);
+
+        Log::dump($user);
+
+        if ($user === null) {
+            Log::write("Сохранение нового пользователя (id {$user['id']})");
+            if (User::create($user)) {
+                return User::get($user['id']);
+            } else {
+                Log::warning("Сохранение не удалось");
+                return null;
+            }
+        }
+
+        return $user;
     }
 
     /**

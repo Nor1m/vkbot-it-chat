@@ -31,7 +31,7 @@ class Tech extends BaseCommand
             return;
         }
 
-        if (!$user = $this->loadUser()) {
+        if (!$user = User::getOrCreate($this->fromUser())) {
             Message::write(
                 $this->object()['peer_id'],
                 'Что-то явно пошло не так, не трогайте меня'
@@ -50,29 +50,6 @@ class Tech extends BaseCommand
         }
 
         $this->add($user, $args);
-    }
-
-    /**
-     * @todo Костылище, тупая копипаста из класса UserCommand, надо придумать хранилище данных
-     * @return User|null
-     */
-    private function loadUser(): ?User
-    {
-        $user = User::get($this->fromUser()['id']);
-
-        Log::dump($user);
-
-        if ($user === null) {
-            Log::write("Сохранение нового пользователя (id {$this->fromUser()['id']})");
-            if (User::create($this->fromUser())) {
-                return User::get($this->fromUser()['id']);
-            } else {
-                Log::warning("Сохранение не удалось");
-                return null;
-            }
-        }
-
-        return $user;
     }
 
     /**
