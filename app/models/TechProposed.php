@@ -78,31 +78,113 @@ SQL
     }
 
     /**
-     * @param int $limit
      * @param bool $closed
+     * @param int $page
+     * @param int $pageSize
      * @return self[]
      */
-    public static function findAll(int $limit = 10, bool $closed = false)
+    public static function getPaged(bool $closed = false, int $page = 1, int $pageSize = 10)
     {
         $stmt = Db::pdo()->prepare(<<<SQL
 SELECT *
 FROM `tech_proposed`
 WHERE closed = :closed
 LIMIT :limit
+OFFSET :offset
 SQL
         );
 
         $stmt->bindValue('closed', $closed ? 1 : 0, PDO::PARAM_BOOL);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $pageSize, PDO::PARAM_INT);
+        $stmt->bindValue('offset', ($page - 1) * $pageSize, PDO::PARAM_INT);
 
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, self::class);
     }
 
+    public static function getTotalCount($closed = false) {
+        return Db::queryScalar("SELECT COUNT(id) FROM tech_proposed WHERE closed = :closed", [
+            'closed' => $closed,
+        ]);
+    }
+
+    public static function getDeniedCount() {
+        return Db::queryScalar(<<<SQL
+SELECT COUNT(proposed.id) as count
+FROM tech_proposed proposed
+  LEFT OUTER JOIN tech ON tech.code = proposed.code
+WHERE proposed.closed = TRUE AND tech.id IS NULL
+SQL
+        );
+    }
+
+    public static function getAppliedCount() {
+        return Db::queryScalar(<<<SQL
+SELECT COUNT(proposed.id) as count
+FROM tech_proposed proposed
+  INNER JOIN tech ON tech.code = proposed.code
+SQL
+        );
+    }
+
+    public static function getDenied($page = 1, $pageSize = 10): array
+    {
+        return Db::queryAll(<<<SQL
+SELECT proposed.*
+FROM tech_proposed proposed
+  LEFT OUTER JOIN tech ON tech.code = proposed.code
+WHERE proposed.closed = TRUE AND tech.id IS NULL
+LIMIT :lim
+OFFSET :offs
+SQL
+            , [
+                'lim' => $pageSize,
+                'offs' => ($page - 1) * $pageSize,
+            ],
+            PDO::FETCH_CLASS,
+            Tech::class
+        );
+    }
+
+    public static function getApplied($page = 1, $pageSize = 10): array
+    {
+        return Db::queryAll(<<<SQL
+SELECT tech.*
+FROM tech_proposed proposed
+  INNER JOIN tech ON tech.code = proposed.code
+LIMIT :lim
+OFFSET :offs
+SQL
+            , [
+                'lim' => $pageSize,
+                'offs' => ($page - 1) * $pageSize,
+            ],
+            PDO::FETCH_CLASS,
+            Tech::class
+        );
+    }
+
+    public function isApplied():bool
+    {
+        return Db::queryScalar("SELECT 1 FROM tech WHERE code = :code", [
+            'code' => $this->code,
+        ]);
+    }
+
+    public function delete(): bool
+    {
+        return Db::execute("DELETE FROM tech_proposed WHERE id = :id", [
+            'id' => $this->id,
+        ]);
+    }
+
     public function close(): bool
     {
-        $success = Db::pdo()->prepare("UPDATE tech_proposed SET closed = TRUE")->execute();
+        $success = Db::execute(
+            "UPDATE tech_proposed SET closed = TRUE WHERE id = :id",
+            ['id' => $this->id]
+        );
         if ($success) {
             $this->closed = true;
         }
