@@ -71,7 +71,7 @@ SQL
      * @param string $name
      * @return bool
      */
-    public function setName(string $name): bool
+    public function updateName(string $name): bool
     {
         return Db::pdo()->prepare(<<<SQL
 UPDATE `user`
@@ -88,7 +88,7 @@ SQL
      * @param string $surname
      * @return bool
      */
-    public function setSurname(string $surname): bool
+    public function updateSurname(string $surname): bool
     {
         return Db::pdo()->prepare(<<<SQL
 UPDATE `user`
@@ -105,7 +105,7 @@ SQL
      * @param string $patr
      * @return bool
      */
-    public function setPatr(string $patr): bool
+    public function updatePatr(string $patr): bool
     {
         return Db::pdo()->prepare(<<<SQL
 UPDATE `user`
@@ -161,6 +161,7 @@ SQL
 SELECT stack.*, user_tech.ord
 FROM tech stack
 INNER JOIN user_tech ON stack.id = user_tech.tech_id AND user_tech.user_id = :userId
+ORDER BY ord
 SQL
         );
 

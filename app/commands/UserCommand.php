@@ -2,12 +2,14 @@
 
 namespace App\commands;
 
+use App\commands\user\Tech as TechCommand;
 use App\base\BaseCommand;
 use App\base\Message;
 use App\Log;
 use App\models\Tech;
 use App\models\TechProposed;
 use App\models\User;
+use App\models\UserTech;
 
 class UserCommand extends BaseCommand
 {
@@ -16,7 +18,9 @@ class UserCommand extends BaseCommand
     const FLAG_PATR = 'patr';
     const FLAG_INFO = 'info';
     const FLAG_TECH = 'tech';
-    const FLAG_DEL_TECH = 'del-tech';
+    const FLAG_TECH_DEL = ['-d', '-del'];
+    const FLAG_TECH_MOVE = ['-mov', '-move'];
+    const FLAG_TECH_SORT = '-sort';
 
     /**
      * @param array $argc
@@ -27,76 +31,30 @@ class UserCommand extends BaseCommand
     {
         $flag = reset($argc);
 
-        $user = User::get($this->fromUser()['id']);
+        if ($flag == self::FLAG_TECH) {
+            array_shift($argc);
+            $cmd = new TechCommand($this->vk(), $this->object(), $this->fromUser(), []);
+            $cmd->run($argc);
+            return;
+        }
 
-        Log::dump($user);
-
-        if ($user === null) {
-            Log::write("Сохранение нового пользователя (id {$this->fromUser()['id']})");
-            if (User::create($this->fromUser())) {
-                $user = User::get($this->fromUser()['id']);
-            } else {
-                Log::warning("Сохранение не удалось");
-                return;
-            }
+        if (!$user = $this->loadUser()) {
+            Message::write(
+                $this->object()['peer_id'],
+                'Что-то явно пошло не так, не трогайте меня'
+            );
+            return;
         }
 
         switch ($flag) {
             case self::FLAG_SURNAME:
-                $user->setSurname($argc[1]);
+                $user->updateSurname($argc[1]);
                 break;
             case self::FLAG_NAME:
-                $user->setName($argc[1]);
+                $user->updateName($argc[1]);
                 break;
             case self::FLAG_PATR:
-                $user->setPatr($argc[1]);
-                break;
-
-            case self::FLAG_TECH:
-
-                $tech = Tech::getByCode($argc[1]);
-
-                if ($tech === null) {
-                    $proposal = TechProposed::getByCode($argc[1]);
-
-                    if ($proposal === null) {
-                        $user->addStackProposal(TechProposed::create($argc[1]));
-                    } elseif (!$proposal->closed) {
-                        $user->addStackProposal($proposal->id);
-                    } else {
-                        Message::write(
-                            $this->object()['peer_id'],
-                            "Такой технологии нет, и добавлять я её не собираюсь"
-                        );
-                        return;
-                    }
-
-                    Message::write(
-                        $this->object()['peer_id'],
-                        'Такой технологии нет, но я её запомню. Если позже её утвердят, она у тебя появится'
-                    );
-                }
-
-                $user->addStackItem($tech->id);
-
-                break;
-
-            case self::FLAG_DEL_TECH:
-
-                if (is_numeric($argc[1])) {
-                    $user->removeStackItemByOrd($argc[1]);
-                    break;
-                }
-
-                $tech = Tech::getByCode($argc[1]);
-
-                if ($tech === null) {
-                    Message::write($this->object()['peer_id'], "Такой технологи я не знаю, соре");
-                    return;
-                }
-
-                $user->removeStackItem($tech->id);
-
+                $user->updatePatr($argc[1]);
                 break;
 
             case self::FLAG_INFO:
@@ -131,5 +89,24 @@ class UserCommand extends BaseCommand
         }
 
         Message::write($this->object()['peer_id'], "Сделано");
+    }
+
+    private function loadUser(): ?User
+    {
+        $user = User::get($this->fromUser()['id']);
+
+        Log::dump($user);
+
+        if ($user === null) {
+            Log::write("Сохранение нового пользователя (id {$this->fromUser()['id']})");
+            if (User::create($this->fromUser())) {
+                return User::get($this->fromUser()['id']);
+            } else {
+                Log::warning("Сохранение не удалось");
+                return null;
+            }
+        }
+
+        return $user;
     }
 }
