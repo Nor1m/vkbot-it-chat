@@ -55,19 +55,15 @@ SQL
     }
 
     /**
-     * @param int $limit
      * @return self[]
      */
-    public static function findAll(int $limit = 10)
+    public static function findAll()
     {
         $stmt = Db::pdo()->prepare(<<<SQL
 SELECT *
 FROM `tech`
-LIMIT :limit
 SQL
         );
-
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
 
         $stmt->execute();
 
