@@ -23,7 +23,7 @@ class Edit extends BaseCommand
     public function run(array $args): void
     {
         if (count($args) < 3) {
-            Message::write($this->object()['peer_id'], "Неверное число параметров");
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
         }
 
         list($code, $flag) = $args;
@@ -33,7 +33,9 @@ class Edit extends BaseCommand
         $tech = Tech::getByCode($code);
 
         if (!$tech) {
-            Message::write($this->object()['peer_id'], 'Такой технологии нет');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_tech', [
+                '{tech}' => $code,
+            ]));
             return;
         }
 
@@ -55,7 +57,7 @@ class Edit extends BaseCommand
     {
         $tech->updateName($name);
 
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 
     /**
@@ -68,7 +70,7 @@ class Edit extends BaseCommand
     {
         $tech->updateCode($code);
 
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 
     /**
@@ -81,6 +83,6 @@ class Edit extends BaseCommand
     {
         $tech->updateDescription($desc);
 
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 }

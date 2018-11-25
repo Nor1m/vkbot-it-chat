@@ -35,18 +35,17 @@ class TechCommand extends BaseCommand
         switch ($first_arg) {
             case self::FLAG_INFO:
                 if (!isset($argc[1])) {
-                    Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+                    Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
                     return;
                 }
 
                 $tech = Tech::getByCode($argc[1]);
 
-                Message::write($this->object()['peer_id'], <<<MSG
-Технология: {$tech->name}
-Код в моей базе: {$tech->code}
-Описание: {$tech->description}
-MSG
-                );
+                Message::write($this->object()['peer_id'], Message::t('message.tech_info', [
+                    '{name}' => $tech->name,
+                    '{code}' => $tech->code,
+                    '{description}' => $tech->description,
+                ]));
 
                 return;
 
@@ -64,7 +63,11 @@ MSG
                 $msg = 'Доступные технологии:' . PHP_EOL;
                 $c = 0;
                 foreach ($techs as $tech) {
-                    $msg .= ++$c . '. ' . $tech->name . ' (' . $tech->code . ')' . PHP_EOL;
+                    $msg .= Message::t('message.tech_item_with_code', [
+                            '{ord}' => ++$c,
+                            '{name}' => $tech->name,
+                            '{code}' => $tech->code,
+                        ]) . PHP_EOL;
                 }
 
                 Message::write($this->object()['peer_id'], $msg);

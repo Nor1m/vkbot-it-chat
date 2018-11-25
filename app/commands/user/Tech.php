@@ -23,18 +23,19 @@ class Tech extends BaseCommand
      * @param array $args
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     public function run(array $args): void
     {
         if (!$args) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
         if (!$user = User::getOrCreate($this->fromUser())) {
             Message::write(
                 $this->object()['peer_id'],
-                'Что-то явно пошло не так, не трогайте меня'
+                Message::t('error.smf_wrong')
             );
             return;
         }
@@ -57,39 +58,40 @@ class Tech extends BaseCommand
      * @param array $args
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     private function add(User $user, array $args): void
     {
         if (!$args) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
-        $msg = "Добавление технологий в стак.";
+        $msg = Message::t('message.user_stack_add');
 
         foreach ($args as $arg) {
             $tech = TechModel::getByCode($arg);
 
             if ($tech === null) {
                 $proposal = TechProposed::getByCode($arg);
-
+                $msg .= PHP_EOL . Message::t('warning.no_tech', ['{tech}' => $arg]);
                 if ($proposal === null) {
                     $user->addStackProposal(TechProposed::create($arg));
                 } elseif (!$proposal->closed) {
                     $user->addStackProposal($proposal->id);
                 } else {
-                    $msg .= PHP_EOL . "$arg - такой технологии нет, и добавлять я её не собираюсь";
+                    $msg .= " " . Message::t('message.proposed_not_added');
                     continue;
                 }
 
-                $msg .= PHP_EOL
-                    . "$arg - такой технологии нет, но я её запомню."
-                    . " Если позже её утвердят, она у тебя появится";
+                $msg .= " " . Message::t('message.proposed_added');
                 continue;
             }
 
             $user->addStackItem($tech->id);
-            $msg .= PHP_EOL . "$arg - технология добавлена";
+            $msg .= PHP_EOL . Message::t('message.user_stack_added', [
+                    '{tech}' => $arg,
+                ]);
         }
 
         Message::write($this->object()['peer_id'], $msg);
@@ -100,29 +102,32 @@ class Tech extends BaseCommand
      * @param User $user
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     private function delete(User $user, array $args): void
     {
         if (count($args) < 1) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
         if (is_numeric($args[0])) {
             $user->removeStackItemByOrd($args[0]);
-            Message::write($this->object()['peer_id'], "Сделано");
+            Message::write($this->object()['peer_id'], Message::t('success.done'));
             return;
         }
 
         $tech = TechModel::getByCode($args[0]);
 
         if ($tech === null) {
-            Message::write($this->object()['peer_id'], "Такой технологи я не знаю, соре");
+            Message::write($this->object()['peer_id'], Message::t('warning.no_tech', [
+                '{tech}' => $args[0],
+            ]));
             return;
         }
 
         $user->removeStackItem($tech->id);
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 
     /**
@@ -130,11 +135,12 @@ class Tech extends BaseCommand
      * @param User $user
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     private function move(User $user, array $args): void
     {
         if (count($args) < 2) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
@@ -147,7 +153,7 @@ class Tech extends BaseCommand
         }
 
         if ($tech === null) {
-            Message::write($this->object()['peer_id'], "Такой технологии у тебя в стаке нет");
+            Message::write($this->object()['peer_id'], Message::t('warning.user_stack_no_tech'));
             return;
         }
 
@@ -155,7 +161,7 @@ class Tech extends BaseCommand
 
         if ($pos == 'end') {
             UserTech::moveTechEnd($user->vk_id, $tech->id);
-            Message::write($this->object()['peer_id'], "Сделано");
+            Message::write($this->object()['peer_id'], Message::t('success.done'));
             return;
         }
 
@@ -167,7 +173,7 @@ class Tech extends BaseCommand
 
         UserTech::moveTech($user->vk_id, $tech->id, (int) $pos);
 
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 
     /**
@@ -175,10 +181,11 @@ class Tech extends BaseCommand
      * @param $user
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     private function sort(User $user, array $args)
     {
         UserTech::sortTechsAlphabetical($user->vk_id);
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 }

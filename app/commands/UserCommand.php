@@ -26,6 +26,7 @@ class UserCommand extends BaseCommand
      * @param array $argc
      * @throws \VK\Exceptions\VKApiException
      * @throws \VK\Exceptions\VKClientException
+     * @throws \Exception
      */
     public function run(array $argc): void
     {
@@ -41,7 +42,7 @@ class UserCommand extends BaseCommand
         if (!$user = User::getOrCreate($this->fromUser())) {
             Message::write(
                 $this->object()['peer_id'],
-                'Что-то явно пошло не так, не трогайте меня'
+                Message::t('error.smf_wrong')
             );
             return;
         }
@@ -60,12 +61,14 @@ class UserCommand extends BaseCommand
             case self::FLAG_INFO:
             default:
 
-                $msg = "Вот что я знаю о тебе:" . PHP_EOL
-                    . 'Фамилия: ' . $user->last_name . PHP_EOL
-                    . 'Имя: ' . $user->first_name;
+                $msg = Message::t('message.user_info', [
+                    '{name}' => $user->first_name,
+                    '{surname}' => $user->last_name,
+                ]);
 
                 if ($user->patronymic) {
-                    $msg .= PHP_EOL . 'Отчество: ' . $user->patronymic;
+                    $msg .= PHP_EOL
+                        . Message::t('message.user_info_patr', ['{patr}' => $user->patronymic]);
                 }
 
                 $user->loadStack();
@@ -74,10 +77,13 @@ class UserCommand extends BaseCommand
 
                 if ($user->stack) {
                     $msg .= PHP_EOL . PHP_EOL
-                        . 'Стак:' . PHP_EOL
+                        . Message::t('message.user_stack_head')
                         . implode(PHP_EOL, array_map(
                             function (Tech $tech) {
-                                return $tech->ord . '. ' . ($tech->name ?: $tech->code);
+                                return Message::t('message.tech_item', [
+                                    '{ord}' => $tech->ord,
+                                    '{name}' => ($tech->name ?: $tech->code),
+                                ]);
                             },
                             $user->stack
                         ));
@@ -88,6 +94,6 @@ class UserCommand extends BaseCommand
                 return;
         }
 
-        Message::write($this->object()['peer_id'], "Сделано");
+        Message::write($this->object()['peer_id'], Message::t('success.done'));
     }
 }

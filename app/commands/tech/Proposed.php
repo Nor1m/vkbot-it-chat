@@ -95,7 +95,7 @@ class Proposed extends BaseCommand
         Protect::checkIsChatAdmin($this->fromUser(), $this->object()['peer_id']);
 
         if (count($args) < 1) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
@@ -130,7 +130,7 @@ class Proposed extends BaseCommand
         Protect::checkIsChatAdmin($this->fromUser(), $this->object()['peer_id']);
 
         if (count($args) < 1) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
@@ -238,7 +238,7 @@ class Proposed extends BaseCommand
     private function del($args)
     {
         if (!isset($args[0])) {
-            Message::write($this->object()['peer_id'], 'Неверное число аргументов');
+            Message::write($this->object()['peer_id'], Message::t('warning.no_args'));
             return;
         }
 
@@ -253,7 +253,7 @@ class Proposed extends BaseCommand
         }
 
         if ($proposed->delete()) {
-            $msg = 'Сделано';
+            $msg = Message::t('success.done');
         } else {
             $msg = 'Что-то не так';
         }
