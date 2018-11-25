@@ -68,16 +68,16 @@ SQL
         ]);
     }
 
-    public static function getOrCreate(array $user): ?self
+    public static function getOrCreate(array $vkUser): ?self
     {
-        $user = User::get($user['id']);
+        $user = User::get($vkUser['id']);
 
         Log::dump($user);
 
         if ($user === null) {
-            Log::write("Сохранение нового пользователя (id {$user['id']})");
-            if (User::create($user)) {
-                return User::get($user['id']);
+            Log::write("Сохранение нового пользователя (id {$vkUser['id']})");
+            if (User::create($vkUser)) {
+                return User::get($vkUser['id']);
             } else {
                 Log::warning("Сохранение не удалось");
                 return null;
