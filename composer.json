@@ -3,6 +3,14 @@
     "license": "MIT",
     "description": "it",
     "type": "project",
+    "scripts": {
+        "db-init": [
+            "Scripts\\DbScript::init"
+        ],
+        "db-drop": [
+            "Scripts\\DbScript::drop"
+        ]
+    },
     "require": {
         "php": "^7.2",
         "vkcom/vk-php-sdk": "^5.80",
@@ -12,7 +20,8 @@
     },
     "autoload": {
         "psr-4" : {
-            "App\\" : "app"
+            "App\\" : "app",
+            "Scripts\\": "scripts"
         },
         "files": [
             "app/config/env.php"
