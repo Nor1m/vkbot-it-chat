@@ -12,11 +12,9 @@ if (!isset($_REQUEST)) {
     return;
 }
 
-require_once "app/config/env.php";
+require_once "vendor/autoload.php";
 
 if (!BOT_STATUS) die("ok"); // отрубаем всё
-
-require_once "vendor/autoload.php";
 
 Log::init(ROOT_PATH . 'storage/logs/log.txt');
 
