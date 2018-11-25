@@ -23,7 +23,7 @@ class TechCommand extends BaseCommand
      */
     public function run(array $argc): void
     {
-        $first_arg = reset($argc);
+        $first_arg = mb_strtolower(strval(reset($argc)));
 
         if (in_array($first_arg, self::FLAG_PROPOSED)) {
             array_shift($argc);

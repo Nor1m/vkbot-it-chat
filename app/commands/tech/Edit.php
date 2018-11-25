@@ -10,9 +10,12 @@ use App\models\Tech;
 class Edit extends BaseCommand
 {
     const FLAGS = [
-        'name'        => ['-nam', '-name'],
-        'code'        => ['-cod', '-code'],
-        'description' => ['-desc'],
+        '-nam'         => 'name',
+        '-name'        => 'name',
+        '-cod'         => 'code',
+        '-code'        => 'code',
+        '-description' => 'description',
+        '-desc'        => 'description',
     ];
 
     /**
@@ -39,11 +42,11 @@ class Edit extends BaseCommand
             return;
         }
 
-        foreach (self::FLAGS as $action => $flags) {
-            if (in_array($flag, $flags)) {
-                $this->{$action}($tech, $arg);
-                return;
-            }
+        $flag = mb_strtolower(strval(array_shift($flag)));
+
+        if (isset(self::FLAGS[$flag])) {
+            $this->{self::FLAGS[$flag]}($tech, $arg);
+            return;
         }
     }
 

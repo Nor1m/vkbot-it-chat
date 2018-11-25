@@ -13,10 +13,13 @@ use App\models\UserTech;
 class Tech extends BaseCommand
 {
     const FLAGS = [
-        'delete' => ['-rm', '-del'],
-        'move'   => ['-move', '-mov', '-mv'],
-        'sort'   => ['-sort'],
-        'add'    => ['-add'],
+        '-rm'   => 'delete',
+        '-del'  => 'delete',
+        '-move' => 'move',
+        '-mov'  => 'move',
+        '-mv'   => 'move',
+        '-sort' => 'sort',
+        '-add'  => 'add',
     ];
 
     /**
@@ -40,14 +43,12 @@ class Tech extends BaseCommand
             return;
         }
 
-        $first_arg = reset($args);
+        $first_arg = mb_strtolower(strval(reset($args)));
 
-        foreach (self::FLAGS as $action => $flags) {
-            if (in_array($first_arg, $flags)) {
-                array_shift($args);
-                $this->{$action}($user, $args);
-                return;
-            }
+        if (isset(self::FLAGS[$first_arg])) {
+            array_shift($args);
+            $this->{self::FLAGS[$first_arg]}($user, $args);
+            return;
         }
 
         $this->add($user, $args);

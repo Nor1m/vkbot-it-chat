@@ -15,12 +15,13 @@ use App\models\TechProposed;
 class Proposed extends BaseCommand
 {
     const FLAGS = [
-        'apply'   => ['-apply'],
-        'deny'    => ['-deny'],
-        'denied'  => ['-denied'],
-        'applied' => ['-applied'],
-        'closed'  => ['-closed'],
-        'del'     => ['-del', '-rm'],
+        '-apply'   => 'apply',
+        '-deny'    => 'deny',
+        '-denied'  => 'denied',
+        '-applied' => 'applied',
+        '-closed'  => 'closed',
+        '-del'     => 'del',
+        '-rm'      => 'del',
     ];
 
     /**
@@ -30,13 +31,11 @@ class Proposed extends BaseCommand
      */
     public function run(array $args): void
     {
-        $first_arg = array_shift($args);
+        $first_arg = mb_strtolower(strval(array_shift($args)));
 
-        foreach (self::FLAGS as $action => $flags) {
-            if (in_array($first_arg, $flags)) {
-                $this->{$action}($args);
-                return;
-            }
+        if (isset(self::FLAGS[$first_arg])) {
+            $this->{self::FLAGS[$first_arg]}($args);
+            return;
         }
 
         $this->list(is_numeric($first_arg) ? $first_arg : 1, false);

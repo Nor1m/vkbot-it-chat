@@ -18,9 +18,6 @@ class UserCommand extends BaseCommand
     const FLAG_PATR = 'patr';
     const FLAG_INFO = 'info';
     const FLAG_TECH = 'tech';
-    const FLAG_TECH_DEL = ['-d', '-del'];
-    const FLAG_TECH_MOVE = ['-mov', '-move'];
-    const FLAG_TECH_SORT = '-sort';
 
     /**
      * @param array $argc
