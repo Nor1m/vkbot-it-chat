@@ -66,4 +66,22 @@ class Log
     {
         fclose(self::$file);
     }
+
+    public static function sql(string $query, ?array $params = null): void
+    {
+        if (!APP_DEBUG) {
+            return;
+        }
+
+        $msg = '[sql] ' . $query;
+
+        if ($params) {
+            $msg .= PHP_EOL . 'Params:' . PHP_EOL;
+            foreach ($params as $param => $value) {
+                $msg .= $param . ' = ' . $value . PHP_EOL;
+            }
+        }
+
+        self::record($msg);
+    }
 }
