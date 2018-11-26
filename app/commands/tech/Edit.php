@@ -42,7 +42,7 @@ class Edit extends BaseCommand
             return;
         }
 
-        $flag = mb_strtolower(strval(array_shift($flag)));
+        $flag = mb_strtolower(strval($flag));
 
         if (isset(self::FLAGS[$flag])) {
             $this->{self::FLAGS[$flag]}($tech, $arg);
