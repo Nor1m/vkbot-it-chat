@@ -189,5 +189,17 @@ D
         ,
         'access' => BaseCommand::ACCESS_ANYONE,
     ],
+    
+    'speech' => [
+        'aliases' => ['speech', 'спич', 'го', 'текст'],
+        'class'   => \App\commands\SpeechCommand::class,
+        'description' => <<<'D'
+Превращает аудиозапись в текст.
+Аргументов не принимает.
+Пример: $ speech
+D
+        ,
+        'access' => BaseCommand::ACCESS_ANYONE,
+    ],
 
 ];
