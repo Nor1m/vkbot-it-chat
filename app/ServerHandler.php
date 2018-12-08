@@ -63,7 +63,7 @@ class ServerHandler extends VKCallbackApiServerHandler
 
         $text = trim($object['text']);
 
-        if (strtok($text, ' ') === '$') {
+        if (strtok($text, ' ') === BOT_ANCHOR) {
             $this->runCommand(preg_split('/\\s+/', $text, -1, PREG_SPLIT_NO_EMPTY), $object);
         }
 
@@ -78,12 +78,13 @@ class ServerHandler extends VKCallbackApiServerHandler
      */
     protected function runCommand($argc, $object)
     {
-        $cmd = $argc[1];
+        $cmd = mb_strtolower($argc[1]);
 
         $cmdInfo = Config::getCommand($cmd);
 
         if ($cmdInfo === null) {
             Message::write($object['peer_id'], Message::t('warning.wrong_cmd', array(
+                '{$}'   => BOT_ANCHOR,
                 '{cmd}' => $cmd,
             )));
             $this->end();
