@@ -5,6 +5,7 @@ namespace App;
 
 use App\base\BaseCommand;
 use App\base\Config;
+use App\base\Deferred;
 use App\base\Message;
 use App\base\Protect;
 use VK\CallbackApi\Server\VKCallbackApiServerHandler;
@@ -63,7 +64,7 @@ class ServerHandler extends VKCallbackApiServerHandler
 
         $text = trim($object['text']);
 
-        if (strtok($text, ' ') === '$') {
+        if (strtok($text, ' ') === BOT_ANCHOR) {
             $this->runCommand(preg_split('/\\s+/', $text, -1, PREG_SPLIT_NO_EMPTY), $object);
         }
 
@@ -78,12 +79,13 @@ class ServerHandler extends VKCallbackApiServerHandler
      */
     protected function runCommand($argc, $object)
     {
-        $cmd = $argc[1];
+        $cmd = mb_strtolower($argc[1]);
 
         $cmdInfo = Config::getCommand($cmd);
 
         if ($cmdInfo === null) {
             Message::write($object['peer_id'], Message::t('warning.wrong_cmd', array(
+                '{$}'   => BOT_ANCHOR,
                 '{cmd}' => $cmd,
             )));
             $this->end();
@@ -162,7 +164,27 @@ class ServerHandler extends VKCallbackApiServerHandler
 
     private function end()
     {
+        if (!Deferred::hasTasks()) {
+            die('ok');
+        }
+
+        ignore_user_abort(true);
+        ob_start();
+
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_commit(); // если есть сессия закрыть
+        }
+
+        // выдача ответа и закрытие подключения
         echo 'ok';
-        exit();
+        header("Content-Encoding: none");
+        header("Content-Length: " . ob_get_length());
+        header("Connection: close");
+        ob_end_flush();
+        flush();
+
+        // запуск отложенных задач после закрытия подключения
+        Deferred::run();
+        exit;
     }
 }

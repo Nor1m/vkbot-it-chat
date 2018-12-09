@@ -96,7 +96,7 @@ abstract class BaseCommand
     private function processHelpFlag(): void
     {
         $this->vk()->messages()->send(VK_TOKEN, array(
-            'message' => $this->_description,
+            'message' => strtr($this->_description, array('{$}' => BOT_ANCHOR)),
             'peer_id' => $this->object()['peer_id'],
         ));
     }

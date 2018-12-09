@@ -26,7 +26,7 @@ const BOT_INFO = array(
     'link' => 'https://github.com/Nor1m/vkbot-it-chat',
 );
 
-const BOT_ANCHOR = '$';
+const BOT_ANCHOR = '!';
 
 // Конфигурация VK
 
