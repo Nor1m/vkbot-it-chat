@@ -5,6 +5,7 @@ namespace App;
 
 use App\base\BaseCommand;
 use App\base\Config;
+use App\base\Deferred;
 use App\base\Message;
 use App\base\Protect;
 use VK\CallbackApi\Server\VKCallbackApiServerHandler;
@@ -163,7 +164,27 @@ class ServerHandler extends VKCallbackApiServerHandler
 
     private function end()
     {
+        if (!Deferred::hasTasks()) {
+            die('ok');
+        }
+
+        ignore_user_abort(true);
+        ob_start();
+
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_commit(); // если есть сессия закрыть
+        }
+
+        // выдача ответа и закрытие подключения
         echo 'ok';
-        exit();
+        header("Content-Encoding: none");
+        header("Content-Length: " . ob_get_length());
+        header("Connection: close");
+        ob_end_flush();
+        flush();
+
+        // запуск отложенных задач после закрытия подключения
+        Deferred::run();
+        exit;
     }
 }

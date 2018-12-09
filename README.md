@@ -51,6 +51,14 @@ ___
 $ translate -en Привет мир
 ```
 ___
+### Команда speech
+Переводит пересланное аудиосообщение в текст с помощью сервиса Yandex Speech Kit.  
+Не принимает аргументы.
+Пример:
+```html
+$ speech 
+```
+___
 Доступные коды языков:
 ```html
 ru, az, be, bg, ca, cs, da, de, el, en, es, et, fi, fr, hr, hu, hy, it, lt, lv, mk, nl, no, pl, pt, ro, sk, sl, sq, sr, sv, tr, uk.
