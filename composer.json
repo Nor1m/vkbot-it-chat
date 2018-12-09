@@ -16,7 +16,9 @@
         "vkcom/vk-php-sdk": "^5.80",
         "ext-json": "*",
         "ext-pdo": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-curl": "*",
+        "ext-simplexml": "*"
     },
     "autoload": {
         "psr-4" : {

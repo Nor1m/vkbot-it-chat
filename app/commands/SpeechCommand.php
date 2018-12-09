@@ -3,7 +3,10 @@
 namespace App\commands;
 
 use App\base\BaseCommand;
+use App\base\Deferred;
+use App\base\Message;
 use App\Log;
+
 /**
  * Класс SpeechCommand
  * @package App\commands
@@ -26,16 +29,30 @@ class SpeechCommand extends BaseCommand
             $fwd_message = $object['fwd_messages'][0];
             $link = $fwd_message->attachments[0]->audio_message->link_ogg;
             $duration = $fwd_message->attachments[0]->audio_message->duration;
-            $content = $this->translate($link, $duration);
-            
-        } else { 
-            die("ok");
+
+            Message::write(
+                $this->object()['peer_id'],
+                "О, сейчас послушаю и тебе перескажу, жди"
+            );
+
+            $time = time();
+            Log::dump($time);
+
+            Deferred::add(function () use ($link, $duration, $time) {
+                Log::dump(time());
+                $content = $this->translate($link, $duration);
+                Log::dump(time());
+                Message::write(
+                    $this->object()['peer_id'],
+                    "Послушал, это заняло у меня целых "
+                        . (time() - $time)
+                        . ' секунд! Вот что там было:'
+                        . PHP_EOL
+                        . PHP_EOL
+                        . $content
+                );
+            });
         }
-        
-        $this->vk()->messages()->send(VK_TOKEN, array(
-            'peer_id' => $this->object()['peer_id'],
-            'message' => $content,
-        ));
     }
     
     /**
@@ -46,23 +63,22 @@ class SpeechCommand extends BaseCommand
     public function translate($link, $duration): string
     {
         // если есть аудиозапись
-        if ($link) {
-            $max_duration = 30;
-            if ($duration > $max_duration) {
-                return "Голосовое сообщение слишком длинное. Макс {$max_duration} сек.";
-            } else {
-                $yandex_response = $this->speechkitYandex($link);
-                $xml = simplexml_load_string($yandex_response);
-                $data = $xml->variant[0][0];
-                if (!empty($data)) {
-                    return $data;
-                } else {
-                    return "Голосовое сообщение не распознано";
-                }
-            }
+        if (!$link) {
+            return "Что-то не нахожу голосового в твоих сообщениях";
         }
-        else {
-            die("ok");
+
+        $max_duration = 30;
+        if ($duration > $max_duration) {
+            return "Голосовое сообщение слишком длинное. Макс {$max_duration} сек.";
+        } else {
+            $yandex_response = $this->speechKitYandex($link);
+            $xml = simplexml_load_string($yandex_response);
+            $data = $xml->variant[0][0];
+            if (!empty($data)) {
+                return $data;
+            } else {
+                return "Голосовое сообщение не распознано";
+            }
         }
     }
     
@@ -70,16 +86,22 @@ class SpeechCommand extends BaseCommand
      * @param $file
      * @return mixed
      */
-    function speechkitYandex($file)
+    function speechKitYandex($file)
     {
         $topic = 'queries';
-        $lang = 'ru-RU';
+        $lang  = 'ru-RU';
         return $this->curl(
-            'https://asr.yandex.net/asr_xml?uuid=' . md5(time()) . '&key=' . YANDEXSPEECHKIT_API_KEY . '&topic=' . $topic . '&lang=' . $lang,
-            file_get_contents($file), array(
+            'https://asr.yandex.net/asr_xml?' . http_build_query([
+                'uuid'  => md5(time()),
+                'key'   => YANDEXSPEECHKIT_API_KEY,
+                'topic' => $topic,
+                'lang'  => $lang,
+            ]),
+            file_get_contents($file),
+            [
                 'Content-Type: audio/ogg;codecs=opus',
-                'Transfer-Encoding: chunked'
-            )
+                'Transfer-Encoding: chunked',
+            ]
         );
     }    
     
@@ -101,6 +123,8 @@ class SpeechCommand extends BaseCommand
             curl_close($curl);
             return $out;
         }
+
+        throw new \RuntimeException("Ошибка, не удалось запустить curl");
     }
         
 }
