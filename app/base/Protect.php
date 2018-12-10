@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ROMAN
- * Date: 09.11.2018
- * Time: 22:44
- */
 
 namespace App\base;
-
 
 class Protect
 {
